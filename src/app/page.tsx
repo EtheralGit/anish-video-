@@ -4,13 +4,13 @@ import { FaXTwitter } from "react-icons/fa6";
 import { LiaTelegramPlane } from "react-icons/lia";
 
 export default function Home() {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     let videoTimeout: any;
     videoTimeout = setTimeout(() => {
       setIsMuted(false);
-    }, 50);
+    }, 200);
 
     return () => {
       clearTimeout(videoTimeout);
