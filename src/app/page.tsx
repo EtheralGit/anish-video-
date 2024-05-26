@@ -10,7 +10,7 @@ export default function Home() {
     let videoTimeout: any;
     videoTimeout = setTimeout(() => {
       setIsMuted(false);
-    }, 200);
+    }, 5000);
 
     return () => {
       clearTimeout(videoTimeout);
@@ -105,7 +105,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex justify-center items-center w-full h-full flex-col ">
+    <main className="flex justify-center items-center w-full h-full flex-col overflow-hidden">
       <div className="relative max-w-7xl w-full min-h-screen flex justify-center items-center flex-col px-12 py-8 overflow-hidden">
         <div className="relative md:mt-auto mt-24 overflow-hidden">
           <video src="/provided-video.mp4" autoPlay loop muted={isMuted} />
