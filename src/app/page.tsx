@@ -1,27 +1,32 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import { LiaTelegramPlane } from "react-icons/lia";
 
 export default function Home() {
   const [isMuted, setIsMuted] = useState(true);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handlePlayButtonClick = () => {
+    setIsMuted(false);
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Audio playback failed:", error);
+      });
+    }
+  };
 
   useEffect(() => {
-    let videoTimeout: any;
-    videoTimeout = setTimeout(() => {
-      setIsMuted(false);
-    }, 5000);
-
-    return () => {
-      clearTimeout(videoTimeout);
-    };
-  }, []);
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   useEffect(() => {
     let zombies: HTMLElement[] = [];
     let lastMouseMoveTime = 0;
 
-    const getClosestSide = (x: any, y: any) => {
+    const getClosestSide = (x: number, y: number) => {
       const width = window.innerWidth;
       const height = window.innerHeight;
 
@@ -47,7 +52,7 @@ export default function Home() {
       return closestSide;
     };
 
-    const spawnZombie = (x: any, y: any) => {
+    const spawnZombie = (x: number, y: number) => {
       const zombie = document.createElement("div");
       zombie.classList.add("zombie-wrapper");
 
@@ -55,7 +60,6 @@ export default function Home() {
       zombieImage.src = "/zombie-icon.png";
       zombieImage.classList.add("zombie", "animate-spin-slow");
 
-      // Generate a random size between 0.4rem and 2rem
       const size = Math.random() * (2 - 0.4) + 0.4;
       zombieImage.style.width = `${size}rem`;
       zombieImage.style.height = `${size}rem`;
@@ -86,7 +90,7 @@ export default function Home() {
       }, 1);
     };
 
-    const handleMouseMove = (e: any) => {
+    const handleMouseMove = (e: MouseEvent) => {
       const currentTime = Date.now();
       if (currentTime - lastMouseMoveTime > 80) {
         lastMouseMoveTime = currentTime;
@@ -105,10 +109,16 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex justify-center items-center w-full h-full flex-col overflow-hidden">
+    <main className="relative flex justify-center items-center w-full h-full flex-col overflow-hidden">
+      <button
+        onClick={handlePlayButtonClick}
+        className="absolute inset-0 rounded z-[10000]"
+      ></button>
       <div className="relative max-w-7xl w-full min-h-screen flex justify-center items-center flex-col px-12 py-8 overflow-hidden">
         <div className="relative md:mt-auto mt-24 overflow-hidden">
-          <video src="/provided-video.mp4" autoPlay loop muted={isMuted} />
+          <audio ref={audioRef} src="/audio.mp3" loop />
+          <img src="/zombie.gif" alt="zombie" className="w-[110vh]" />
+
           <div className="absolute bg-gradient-to-b from-black w-full h-24 top-0 inset-x-0" />
           <div className="absolute bg-gradient-to-t from-black w-full h-24 bottom-0 inset-x-0" />
           <div className="absolute bg-gradient-to-l from-black h-full w-24 right-0 inset-y-0" />
